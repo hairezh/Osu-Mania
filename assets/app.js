@@ -1,6 +1,5 @@
 async function loadSkins(){
   const grid = document.getElementById("skinsGrid");
-  const tabsEl = document.getElementById("skinsTabs");
   if(!grid) return;
 
   try{
@@ -9,122 +8,147 @@ async function loadSkins(){
 
     const skins = await res.json();
 
-    // ---------------------------
-    // Tabs / Categorias
-    // ---------------------------
-    let activeCategory = "All";
-    const categories = ["All", ...new Set(skins.map(s => s.category).filter(Boolean))];
+    grid.innerHTML = skins.map((s, skinIdx) => {
+      const basePreviews = Array.isArray(s.previews) ? s.previews.filter(Boolean).slice(0,4) : [];
+      const variants = Array.isArray(s.variants) ? s.variants.filter(v => v && (v.download || v.previews)) : [];
 
-    if(tabsEl){
-      tabsEl.innerHTML = categories.map(c => `
-        <a class="btn ${c === activeCategory ? "active" : ""}" href="#" data-cat="${escapeAttr(c)}">
-          ${escapeHtml(c)}
-        </a>
-      `).join("");
+      // preview inicial: se tiver variants com previews, usa o da variant 0; senão base
+      const v0 = variants[0] || null;
+      const v0Previews = Array.isArray(v0?.previews) ? v0.previews.filter(Boolean).slice(0,4) : [];
+      const previews = (v0Previews.length ? v0Previews : basePreviews);
 
-      tabsEl.addEventListener("click", (e) => {
-        const btn = e.target.closest(".btn");
-        if(!btn) return;
-        e.preventDefault();
+      const first = previews[0] || s.thumb || "";
 
-        activeCategory = btn.dataset.cat || "All";
+      const dots = previews.map((_, i) =>
+        `<div class="previewDot ${i === 0 ? "active" : ""}" data-i="${i}"></div>`
+      ).join("");
 
-        // atualiza estado visual
-        tabsEl.querySelectorAll(".btn").forEach(b =>
-          b.classList.toggle("active", b.dataset.cat === activeCategory)
-        );
+      const arrowsAndDots = previews.length > 1 ? `
+        <div class="previewArrow left" data-dir="-1">◀</div>
+        <div class="previewArrow right" data-dir="1">▶</div>
+        <div class="previewDots">${dots}</div>
+      ` : ``;
 
-        const filtered = (activeCategory === "All")
-          ? skins
-          : skins.filter(s => s.category === activeCategory);
+      // downloads:
+      // - se tiver variants => botão de download vira "variant 0"
+      // - senão usa s.download
+      const initialDownload =
+        variants.length ? (variants[0].download || s.download || "#")
+                       : (s.download || "#");
 
-        renderGrid(filtered);
-      });
+      // botões de variação (se existir)
+      const variantsHtml = variants.length > 1 ? `
+        <div class="cardActions variantsRow">
+          ${variants.map((v, i) => `
+            <a class="small js-variant ${i === 0 ? "active" : ""}"
+               href="#"
+               data-skin="${skinIdx}"
+               data-v="${i}">
+              ${escapeHtml(v.label || `V${i+1}`)}
+            </a>
+          `).join("")}
+        </div>
+      ` : ``;
+
+      return `
+        <div class="card" data-skin="${skinIdx}" data-v="0">
+          <div class="previewWrap">
+            <img
+              class="thumb js-preview"
+              src="${escapeAttr(first)}"
+              alt=""
+              data-skin="${skinIdx}"
+              data-v="0"
+              data-i="0"
+            >
+            ${arrowsAndDots}
+          </div>
+
+          <div class="cardBody">
+            <div class="cardTitle">${escapeHtml(s.name || "Untitled")}</div>
+
+            ${variantsHtml}
+
+            <div class="cardActions">
+              <a class="small js-download"
+                 href="${escapeAttr(initialDownload)}"
+                 download>
+                 Download
+              </a>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    function getPreviews(skinIdx, vIdx){
+      const s = skins[skinIdx];
+      const base = Array.isArray(s?.previews) ? s.previews.filter(Boolean).slice(0,4) : [];
+      const variants = Array.isArray(s?.variants) ? s.variants : [];
+      const v = variants?.[vIdx];
+
+      const vPrev = Array.isArray(v?.previews) ? v.previews.filter(Boolean).slice(0,4) : [];
+      return vPrev.length ? vPrev : base;
     }
 
-    // ---------------------------
-    // Render inicial
-    // ---------------------------
-    renderGrid(skins);
+    function getDownload(skinIdx, vIdx){
+      const s = skins[skinIdx];
+      const variants = Array.isArray(s?.variants) ? s.variants : [];
+      const v = variants?.[vIdx];
+      return (v?.download || s?.download || "#");
+    }
 
-    function renderGrid(list){
-      if(!Array.isArray(list) || list.length === 0){
-        grid.innerHTML = `<div class="mini">Nenhum skin nessa categoria.</div>`;
+    function renderDots(wrap, previews, activeIndex){
+      const dotsWrap = wrap.querySelector(".previewDots");
+      if(!dotsWrap) return;
+
+      dotsWrap.innerHTML = previews.map((_, i) =>
+        `<div class="previewDot ${i === activeIndex ? "active" : ""}" data-i="${i}"></div>`
+      ).join("");
+    }
+
+    function ensureArrowsDots(wrap, previews, activeIndex){
+      // se só 1 preview, remove overlays se existirem
+      const left = wrap.querySelector(".previewArrow.left");
+      const right = wrap.querySelector(".previewArrow.right");
+      const dotsWrap = wrap.querySelector(".previewDots");
+
+      if(previews.length <= 1){
+        left?.remove();
+        right?.remove();
+        dotsWrap?.remove();
         return;
       }
 
-      grid.innerHTML = list.map((s) => {
-        const previews = Array.isArray(s.previews) ? s.previews.filter(Boolean).slice(0,4) : [];
-        const first = previews[0] || s.thumb || "";
-
-        const dots = previews.map((_, i) =>
-          `<div class="previewDot ${i === 0 ? "active" : ""}" data-i="${i}"></div>`
-        ).join("");
-
-        // downloads: variants (preferencial) ou download simples
-        const variants = Array.isArray(s.variants) ? s.variants.filter(v => v && v.download) : [];
-
-        const downloadsHtml =
-          variants.length
-            ? variants.map(v => `
-                <a class="small" href="${escapeAttr(v.download)}" download>
-                  ${escapeHtml(v.label || "Download")}
-                </a>
-              `).join("")
-            : (s.download
-                ? `<a class="small" href="${escapeAttr(s.download)}" download>Download</a>`
-                : `<span class="mini">Sem download</span>`
-              );
-
-        // chave estável (pra preview não quebrar quando filtra)
-        const skinKey = s.id ? String(s.id) : `idx:${skins.indexOf(s)}`;
-
-        return `
-          <div class="card">
-            <div class="previewWrap">
-              <img
-                class="thumb js-preview"
-                src="${escapeAttr(first)}"
-                alt=""
-                data-skin="${escapeAttr(skinKey)}"
-                data-i="0"
-              >
-              ${previews.length > 1 ? `
-                <div class="previewArrow left" data-dir="-1">◀</div>
-                <div class="previewArrow right" data-dir="1">▶</div>
-                <div class="previewDots">${dots}</div>
-              ` : ``}
-            </div>
-
-            <div class="cardBody">
-              <div class="cardTitle">${escapeHtml(s.name || "Untitled")}</div>
-
-              <div class="meta">
-                ${s.category ? `<span>${escapeHtml(s.category)}</span>` : ``}
-                ${previews.length ? `<span>${previews.length} preview(s)</span>` : ``}
-              </div>
-
-              <div class="cardActions">
-                ${downloadsHtml}
-              </div>
-            </div>
-          </div>
-        `;
-      }).join("");
-    }
-
-    function getSkinByKey(key){
-      const k = String(key || "");
-      if(k.startsWith("idx:")){
-        const idx = Number(k.slice(4));
-        return skins[idx];
+      // se não existir, cria
+      if(!left){
+        const el = document.createElement("div");
+        el.className = "previewArrow left";
+        el.dataset.dir = "-1";
+        el.textContent = "◀";
+        wrap.appendChild(el);
       }
-      return skins.find(s => String(s.id) === k);
+      if(!right){
+        const el = document.createElement("div");
+        el.className = "previewArrow right";
+        el.dataset.dir = "1";
+        el.textContent = "▶";
+        wrap.appendChild(el);
+      }
+      if(!dotsWrap){
+        const el = document.createElement("div");
+        el.className = "previewDots";
+        wrap.appendChild(el);
+      }
+
+      renderDots(wrap, previews, activeIndex);
     }
 
     function setPreview(img, targetIndex){
-      const s = getSkinByKey(img.dataset.skin);
-      const previews = Array.isArray(s?.previews) ? s.previews.filter(Boolean).slice(0,4) : [];
+      const skinIdx = Number(img.dataset.skin);
+      const vIdx = Number(img.dataset.v || 0);
+
+      const previews = getPreviews(skinIdx, vIdx);
       if(previews.length === 0) return;
 
       const i = ((targetIndex % previews.length) + previews.length) % previews.length;
@@ -132,18 +156,57 @@ async function loadSkins(){
       img.src = previews[i];
 
       const wrap = img.closest(".previewWrap");
-      const dots = wrap?.querySelectorAll(".previewDot") || [];
+      if(!wrap) return;
+
+      ensureArrowsDots(wrap, previews, i);
+
+      const dots = wrap.querySelectorAll(".previewDot");
       dots.forEach(d => d.classList.toggle("active", Number(d.dataset.i) === i));
     }
 
-    // ---------------------------
-    // Preview interações (setas/dots/click imagem)
-    // ---------------------------
+    function setVariant(card, skinIdx, vIdx){
+      card.dataset.v = String(vIdx);
+
+      // ativa botão visual
+      const variantBtns = card.querySelectorAll(".js-variant");
+      variantBtns.forEach(b => b.classList.toggle("active", Number(b.dataset.v) === vIdx));
+
+      // atualiza download
+      const dl = card.querySelector(".js-download");
+      if(dl) dl.href = getDownload(skinIdx, vIdx);
+
+      // reseta preview pra 0 da variação nova
+      const img = card.querySelector(".js-preview");
+      if(img){
+        img.dataset.v = String(vIdx);
+        img.dataset.i = "0";
+        const previews = getPreviews(skinIdx, vIdx);
+        img.src = previews[0] || img.src;
+
+        const wrap = img.closest(".previewWrap");
+        if(wrap) ensureArrowsDots(wrap, previews, 0);
+      }
+    }
+
+    // Listener único
     grid.addEventListener("click", (e) => {
       const arrow = e.target.closest(".previewArrow");
       const dot = e.target.closest(".previewDot");
       const img = e.target.closest(".js-preview");
+      const variantBtn = e.target.closest(".js-variant");
 
+      // trocar variante
+      if(variantBtn){
+        e.preventDefault();
+        const skinIdx = Number(variantBtn.dataset.skin);
+        const vIdx = Number(variantBtn.dataset.v);
+        const card = variantBtn.closest(".card");
+        if(!card) return;
+        setVariant(card, skinIdx, vIdx);
+        return;
+      }
+
+      // setas
       if(arrow){
         const wrap = arrow.closest(".previewWrap");
         const imgEl = wrap?.querySelector(".js-preview");
@@ -155,6 +218,7 @@ async function loadSkins(){
         return;
       }
 
+      // dots
       if(dot){
         const wrap = dot.closest(".previewWrap");
         const imgEl = wrap?.querySelector(".js-preview");
@@ -165,6 +229,7 @@ async function loadSkins(){
         return;
       }
 
+      // click na imagem
       if(img){
         const current = Number(img.dataset.i || 0);
         setPreview(img, current + 1);
