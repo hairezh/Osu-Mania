@@ -2,6 +2,19 @@ async function loadSkins(){
   const grid = document.getElementById("skinsGrid");
   if(!grid) return;
 
+  // remove duplicados mantendo ordem
+  const uniq = (arr) => {
+    const seen = new Set();
+    const out = [];
+    for(const x of (Array.isArray(arr) ? arr : [])){
+      if(!x) continue;
+      if(seen.has(x)) continue;
+      seen.add(x);
+      out.push(x);
+    }
+    return out;
+  };
+
   try{
     const res = await fetch("data/skins.json", { cache: "no-store" });
     if(!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -9,14 +22,17 @@ async function loadSkins(){
     const skins = await res.json();
 
     grid.innerHTML = skins.map((s, skinIdx) => {
-      const basePreviews = Array.isArray(s.previews) ? s.previews.filter(Boolean).slice(0,4) : [];
-      const variants = Array.isArray(s.variants) ? s.variants.filter(v => v && (v.download || v.previews)) : [];
+      const basePreviews = uniq(s?.previews).slice(0,4);
+
+      const variants = Array.isArray(s.variants)
+        ? s.variants.filter(v => v && (v.download || v.previews))
+        : [];
 
       // preview inicial: se tiver variants com previews, usa o da variant 0; senão base
       const v0 = variants[0] || null;
-      const v0Previews = Array.isArray(v0?.previews) ? v0.previews.filter(Boolean).slice(0,4) : [];
-      const previews = (v0Previews.length ? v0Previews : basePreviews);
+      const v0Previews = uniq(v0?.previews).slice(0,4);
 
+      const previews = (v0Previews.length ? v0Previews : basePreviews);
       const first = previews[0] || s.thumb || "";
 
       const dots = previews.map((_, i) =>
@@ -83,11 +99,12 @@ async function loadSkins(){
 
     function getPreviews(skinIdx, vIdx){
       const s = skins[skinIdx];
-      const base = Array.isArray(s?.previews) ? s.previews.filter(Boolean).slice(0,4) : [];
+      const base = uniq(s?.previews).slice(0,4);
+
       const variants = Array.isArray(s?.variants) ? s.variants : [];
       const v = variants?.[vIdx];
 
-      const vPrev = Array.isArray(v?.previews) ? v.previews.filter(Boolean).slice(0,4) : [];
+      const vPrev = uniq(v?.previews).slice(0,4);
       return vPrev.length ? vPrev : base;
     }
 
