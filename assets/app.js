@@ -23,7 +23,7 @@ function setupIntro(){
       setTimeout(() => {
         intro.remove();
       }, 1000);
-    }, 1800);
+    }, 2000);
   });
 }
 
