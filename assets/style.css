@@ -13,8 +13,9 @@ html,body{ height:100%; }
 body{
   margin:0;
   background:
-    linear-gradient(rgba(0,0,0,.55), rgba(0,0,0,.55)),
-    url("https://media.discordapp.net/attachments/1473364920291557406/1479713113405390950/074868a97ae2ea94612566d089534d4d.png?ex=69ad09b9&is=69abb839&hm=0b77415cb60148ff0ad48221c7b4c93740da65d759d1724ddade72aff829441b&=&format=webp&quality=lossless&width=608&height=335") center / cover no-repeat fixed;
+  linear-gradient(rgba(0,0,0,.55), rgba(0,0,0,.55)),
+  url("https://media.discordapp.net/attachments/1473364920291557406/1479713113405390950/074868a97ae2ea94612566d089534d4d.png") center center / cover no-repeat fixed,
+  var(--bg);
   color:var(--text);
   font: 17px/1.75 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
