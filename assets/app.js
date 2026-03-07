@@ -1,4 +1,3 @@
-
 function escapeHtml(str){
   return String(str).replace(/[&<>"']/g, m => ({
     "&":"&amp;",
@@ -81,10 +80,8 @@ async function loadSkins(){
             <div class="cardTitle">${escapeHtml(s.name || "Untitled")}</div>
 
             <div class="cardActions">
-              <a class="small"
-                 href="${escapeAttr(s.download || "#")}"
-                 download>
-                 Download
+              <a class="small" href="${escapeAttr(s.download || "#")}" download>
+                Download
               </a>
             </div>
           </div>
@@ -95,11 +92,9 @@ async function loadSkins(){
     function setPreview(img, targetIndex){
       const skinIdx = Number(img.dataset.skin);
       const previews = uniq(skins[skinIdx]?.previews).slice(0,4);
-
       if(previews.length === 0) return;
 
       const i = ((targetIndex % previews.length) + previews.length) % previews.length;
-
       img.dataset.i = String(i);
       img.src = previews[i];
 
@@ -120,12 +115,10 @@ async function loadSkins(){
       if(arrow){
         const wrap = arrow.closest(".previewWrap");
         const imgEl = wrap?.querySelector(".js-preview");
-
         if(!imgEl) return;
 
         const dir = Number(arrow.dataset.dir || 1);
         const current = Number(imgEl.dataset.i || 0);
-
         setPreview(imgEl, current + dir);
         return;
       }
@@ -133,11 +126,9 @@ async function loadSkins(){
       if(dot){
         const wrap = dot.closest(".previewWrap");
         const imgEl = wrap?.querySelector(".js-preview");
-
         if(!imgEl) return;
 
         const target = Number(dot.dataset.i || 0);
-
         setPreview(imgEl, target);
         return;
       }
