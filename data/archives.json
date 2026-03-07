@@ -1,0 +1,25 @@
+[
+  {
+    "name": "Archive Skin Pack 2024",
+    "previews": [
+      "https://example.com/preview1.jpg"
+    ],
+    "download": "https://example.com/archive-skin-pack.osk",
+    "source": "https://example.com/original-page"
+  },
+  {
+    "name": "Old Beatmap Collection",
+    "previews": [
+      "https://example.com/map-preview.jpg"
+    ],
+    "download": "https://example.com/maps-pack.osz",
+    "source": "https://osu.ppy.sh/beatmapsets/12345"
+  },
+  {
+    "name": "Legacy UI Assets",
+    "previews": [
+      "https://example.com/assets-preview.jpg"
+    ],
+    "download": "https://example.com/ui-assets.zip"
+  }
+]
