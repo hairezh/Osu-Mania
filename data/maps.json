@@ -1,1 +1,17 @@
-
+[
+  {
+    "name": "KAEDE [INSANE] - 05-03-2026",
+    "previews": [
+      "https://exemplo.com/map-preview-1.jpg",
+      "https://exemplo.com/map-preview-2.jpg"
+    ],
+    "download": "https://exemplo.com/map-download.osz"
+  },
+  {
+    "name": "Freedom Dive [FOUR DIMENSIONS]",
+    "previews": [
+      "https://exemplo.com/freedomdive-1.jpg"
+    ],
+    "download": "https://exemplo.com/freedomdive.osz"
+  }
+]
