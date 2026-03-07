@@ -77,9 +77,11 @@ async function loadMaps(){
     function setPreview(img, targetIndex){
       const mapIdx = Number(img.dataset.map);
       const previews = uniq(maps[mapIdx]?.previews).slice(0,4);
+
       if(previews.length === 0) return;
 
       const i = ((targetIndex % previews.length) + previews.length) % previews.length;
+
       img.dataset.i = String(i);
       img.src = previews[i];
 
@@ -100,10 +102,12 @@ async function loadMaps(){
       if(arrow){
         const wrap = arrow.closest(".previewWrap");
         const imgEl = wrap?.querySelector(".js-preview");
+
         if(!imgEl) return;
 
         const dir = Number(arrow.dataset.dir || 1);
         const current = Number(imgEl.dataset.i || 0);
+
         setPreview(imgEl, current + dir);
         return;
       }
@@ -111,9 +115,11 @@ async function loadMaps(){
       if(dot){
         const wrap = dot.closest(".previewWrap");
         const imgEl = wrap?.querySelector(".js-preview");
+
         if(!imgEl) return;
 
         const target = Number(dot.dataset.i || 0);
+
         setPreview(imgEl, target);
         return;
       }
