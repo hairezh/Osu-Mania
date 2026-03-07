@@ -255,7 +255,7 @@ a{ color:inherit; text-decoration:none; }
   z-index:9999;
   opacity:1;
   visibility:visible;
-  transition:opacity .9s ease, visibility .9s ease;
+  transition:opacity .2s ease, visibility .2s ease;
 }
 
 #intro.hide{
@@ -271,7 +271,7 @@ a{ color:inherit; text-decoration:none; }
   letter-spacing:2px;
   opacity:0;
   transform:translateY(10px);
-  animation:introTextShow 1s ease forwards;
+  animation:introTextShow 2s ease forwards;
 }
 
 @keyframes introTextShow{
