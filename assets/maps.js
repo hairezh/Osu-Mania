@@ -40,13 +40,21 @@ async function loadMaps(){
           <div class="cardBody">
             <div class="cardTitle">${escapeHtml(m.name || "Untitled")}</div>
 
-            <div class="cardActions">
-              <a class="small"
-                 href="${escapeAttr(m.download || "#")}"
-                 download>
-                 Download
-              </a>
-            </div>
+<div class="cardActions">
+
+  <a class="small"
+     href="${escapeAttr(m.download || "#")}"
+     download>
+     Download
+  </a>
+
+  <a class="small"
+     href="${escapeAttr(m.osu || "#")}"
+     target="_blank">
+     osu! page
+  </a>
+
+</div>
           </div>
 
         </div>
