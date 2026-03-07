@@ -1,3 +1,17 @@
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, m => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#39;"
+  }[m]));
+}
+
+function escapeAttr(str){
+  return escapeHtml(str);
+}
+
 async function loadMaps(){
   const grid = document.getElementById("mapsGrid");
   if(!grid) return;
@@ -63,11 +77,9 @@ async function loadMaps(){
     function setPreview(img, targetIndex){
       const mapIdx = Number(img.dataset.map);
       const previews = uniq(maps[mapIdx]?.previews).slice(0,4);
-
       if(previews.length === 0) return;
 
       const i = ((targetIndex % previews.length) + previews.length) % previews.length;
-
       img.dataset.i = String(i);
       img.src = previews[i];
 
@@ -116,20 +128,6 @@ async function loadMaps(){
     console.error(e);
     grid.innerHTML = `<div class="mini">Couldn’t load maps.json</div>`;
   }
-}
-
-function escapeHtml(str){
-  return String(str).replace(/[&<>"']/g, m => ({
-    "&":"&amp;",
-    "<":"&lt;",
-    ">":"&gt;",
-    '"':"&quot;",
-    "'":"&#39;"
-  }[m]));
-}
-
-function escapeAttr(str){
-  return escapeHtml(str);
 }
 
 loadMaps();
