@@ -32,7 +32,7 @@ body{
   background-repeat:no-repeat;
   background-attachment:fixed;
   color:var(--text);
-  font:17px/1.75 "JetBrains Mono", monospace;
+  font:17px/1.75 "font", monospace;
 }
 
 a{
