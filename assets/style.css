@@ -1,3 +1,10 @@
+@font-face{
+  font-family:"font";
+  src:url("../fonts/font.ttf") format("truetype");
+  font-weight:normal;
+  font-style:normal;
+}
+
 :root{
   --bg:#0b0c0f;
   --panel:rgba(255,255,255,.05);
