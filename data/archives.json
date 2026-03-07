@@ -1,25 +1,25 @@
 [
   {
-    "name": "Archive Skin Pack 2024",
+    "name": "Mi side (idk the version)",
     "previews": [
-      "https://example.com/preview1.jpg"
+      "https://i.pinimg.com/736x/d1/97/af/d197afeb917326376efe52f4f9a2615f.jpg"
     ],
-    "download": "https://example.com/archive-skin-pack.osk",
+    "download": "https://www.mediafire.com/file/jbehejyw2dfowhh/MiSide.zip/file",
     "source": "https://example.com/original-page"
   },
   {
-    "name": "Old Beatmap Collection",
+    "name": "",
     "previews": [
-      "https://example.com/map-preview.jpg"
+      ""
     ],
-    "download": "https://example.com/maps-pack.osz",
-    "source": "https://osu.ppy.sh/beatmapsets/12345"
+    "download": "",
+    "source": ""
   },
   {
-    "name": "Legacy UI Assets",
+    "name": "",
     "previews": [
-      "https://example.com/assets-preview.jpg"
+      ""
     ],
-    "download": "https://example.com/ui-assets.zip"
+    "download": ""
   }
 ]
