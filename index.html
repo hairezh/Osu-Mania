@@ -1,13 +1,11 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <link rel="icon" href="assets/icon.jpg" type="image/png">
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>_h</title>
   <link rel="stylesheet" href="assets/style.css"/>
 </head>
-
 <body>
   <div id="intro">
     <div class="introText">Made by hairez</div>
@@ -17,20 +15,40 @@
     <div class="top">
       <div class="brand">
         <div class="logo">
-          <img src="https://media.discordapp.net/attachments/1473364920291557406/1479710309227958312/d9578892c8c3e0b293b0bed03740a173.jpg?ex=69ad071d&is=69abb59d&hm=1288cf5ada8cb3bca9aa99f3ce4205421e8c90a206018b977444b439ebbd615d&=&format=webp&width=828&height=828" alt="logo">
+          <img src="assets/favicon.png" alt="logo">
         </div>
         <div>
-          <div class="title">My skins</div>
-          <div class="sub"></div>
+          <div class="title">Home</div>
+          <div class="sub">Main page</div>
         </div>
       </div>
 
-      <div class="nav" id="skinsTabs"></div>
+      <div class="nav">
+        <a class="btn" href="skins.html">Skins</a>
+        <a class="btn" href="maps.html">Maps</a>
+      </div>
     </div>
 
-    <div class="grid" id="skinsGrid"></div>
-  </div>
+    <div class="hero">
+      <h1>Welcome</h1>
+      <p>Select a section below.</p>
+    </div>
 
-  <script src="assets/app.js"></script>
+    <div class="grid">
+      <a class="card" href="skins.html">
+        <div class="cardBody">
+          <div class="cardTitle">Skins</div>
+          <div class="meta">Browse and download skins</div>
+        </div>
+      </a>
+
+      <a class="card" href="maps.html">
+        <div class="cardBody">
+          <div class="cardTitle">Maps</div>
+          <div class="meta">Browse and download beatmaps</div>
+        </div>
+      </a>
+    </div>
+  </div>
 </body>
 </html>
