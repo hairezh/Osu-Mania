@@ -1,34 +1,5 @@
-function escapeHtml(str){
-  return String(str).replace(/[&<>"']/g, m => ({
-    "&":"&amp;",
-    "<":"&lt;",
-    ">":"&gt;",
-    '"':"&quot;",
-    "'":"&#39;"
-  }[m]));
-}
-
-function escapeAttr(str){
-  return escapeHtml(str);
-}
-
-function setupIntro(){
-  const intro = document.getElementById("intro");
-  if(!intro) return;
-
-  window.addEventListener("load", () => {
-    setTimeout(() => {
-      intro.classList.add("hide");
-
-      setTimeout(() => {
-        intro.remove();
-      }, 1000);
-    }, 1800);
-  });
-}
-
-async function loadSkins(){
-  const grid = document.getElementById("skinsGrid");
+async function loadMaps(){
+  const grid = document.getElementById("mapsGrid");
   if(!grid) return;
 
   const uniq = (arr) => {
@@ -44,13 +15,13 @@ async function loadSkins(){
   };
 
   try{
-    const res = await fetch("data/skins.json", { cache: "no-store" });
+    const res = await fetch("data/maps.json", { cache: "no-store" });
     if(!res.ok) throw new Error(`HTTP ${res.status}`);
 
-    const skins = await res.json();
+    const maps = await res.json();
 
-    grid.innerHTML = skins.map((s, skinIdx) => {
-      const previews = uniq(s?.previews).slice(0,4);
+    grid.innerHTML = maps.map((m, mapIdx) => {
+      const previews = uniq(m?.previews).slice(0,4);
       const first = previews[0] || "";
 
       const dots = previews.map((_, i) =>
@@ -64,26 +35,24 @@ async function loadSkins(){
       ` : ``;
 
       return `
-        <div class="card" data-skin="${skinIdx}">
+        <div class="card" data-map="${mapIdx}">
           <div class="previewWrap">
             <img
               class="thumb js-preview"
               src="${escapeAttr(first)}"
               alt=""
-              data-skin="${skinIdx}"
+              data-map="${mapIdx}"
               data-i="0"
             >
             ${arrowsAndDots}
           </div>
 
           <div class="cardBody">
-            <div class="cardTitle">${escapeHtml(s.name || "Untitled")}</div>
+            <div class="cardTitle">${escapeHtml(m.name || "Untitled")}</div>
 
             <div class="cardActions">
-              <a class="small"
-                 href="${escapeAttr(s.download || "#")}"
-                 download>
-                 Download
+              <a class="small" href="${escapeAttr(m.download || "#")}" download>
+                Download
               </a>
             </div>
           </div>
@@ -92,8 +61,8 @@ async function loadSkins(){
     }).join("");
 
     function setPreview(img, targetIndex){
-      const skinIdx = Number(img.dataset.skin);
-      const previews = uniq(skins[skinIdx]?.previews).slice(0,4);
+      const mapIdx = Number(img.dataset.map);
+      const previews = uniq(maps[mapIdx]?.previews).slice(0,4);
 
       if(previews.length === 0) return;
 
@@ -119,12 +88,10 @@ async function loadSkins(){
       if(arrow){
         const wrap = arrow.closest(".previewWrap");
         const imgEl = wrap?.querySelector(".js-preview");
-
         if(!imgEl) return;
 
         const dir = Number(arrow.dataset.dir || 1);
         const current = Number(imgEl.dataset.i || 0);
-
         setPreview(imgEl, current + dir);
         return;
       }
@@ -132,11 +99,9 @@ async function loadSkins(){
       if(dot){
         const wrap = dot.closest(".previewWrap");
         const imgEl = wrap?.querySelector(".js-preview");
-
         if(!imgEl) return;
 
         const target = Number(dot.dataset.i || 0);
-
         setPreview(imgEl, target);
         return;
       }
@@ -149,9 +114,22 @@ async function loadSkins(){
 
   }catch(e){
     console.error(e);
-    grid.innerHTML = `<div class="mini">Couldn’t load skins.json</div>`;
+    grid.innerHTML = `<div class="mini">Couldn’t load maps.json</div>`;
   }
 }
 
-setupIntro();
-loadSkins();
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, m => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#39;"
+  }[m]));
+}
+
+function escapeAttr(str){
+  return escapeHtml(str);
+}
+
+loadMaps();
