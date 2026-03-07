@@ -1,3 +1,32 @@
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, m => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#39;"
+  }[m]));
+}
+
+function escapeAttr(str){
+  return escapeHtml(str);
+}
+
+function setupIntro(){
+  const intro = document.getElementById("intro");
+  if(!intro) return;
+
+  window.addEventListener("load", () => {
+    setTimeout(() => {
+      intro.classList.add("hide");
+
+      setTimeout(() => {
+        intro.remove();
+      }, 1000);
+    }, 1800);
+  });
+}
+
 async function loadSkins(){
   const grid = document.getElementById("skinsGrid");
   if(!grid) return;
@@ -21,7 +50,6 @@ async function loadSkins(){
     const skins = await res.json();
 
     grid.innerHTML = skins.map((s, skinIdx) => {
-
       const previews = uniq(s?.previews).slice(0,4);
       const first = previews[0] || "";
 
@@ -84,7 +112,6 @@ async function loadSkins(){
     }
 
     grid.addEventListener("click", (e) => {
-
       const arrow = e.target.closest(".previewArrow");
       const dot = e.target.closest(".previewDot");
       const img = e.target.closest(".js-preview");
@@ -126,18 +153,5 @@ async function loadSkins(){
   }
 }
 
-function escapeHtml(str){
-  return String(str).replace(/[&<>"']/g, m => ({
-    "&":"&amp;",
-    "<":"&lt;",
-    ">":"&gt;",
-    '"':"&quot;",
-    "'":"&#39;"
-  }[m]));
-}
-
-function escapeAttr(str){
-  return escapeHtml(str);
-}
-
+setupIntro();
 loadSkins();
