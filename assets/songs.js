@@ -49,7 +49,7 @@ async function loadsongs(){
 
     const songs = await res.json();
 
-    grid.innerHTML = songs.map((s, skinIdx) => {
+    grid.innerHTML = songs.map((s, songIdx) => {
       const previews = uniq(s?.previews).slice(0,4);
       const first = previews[0] || "";
 
@@ -64,13 +64,13 @@ async function loadsongs(){
       ` : ``;
 
       return `
-        <div class="card" data-skin="${skinIdx}">
+        <div class="card" data-song="${songIdx}">
           <div class="previewWrap">
             <img
               class="thumb js-preview"
               src="${escapeAttr(first)}"
               alt=""
-              data-skin="${skinIdx}"
+              data-song="${songIdx}"
               data-i="0"
             >
             ${arrowsAndDots}
@@ -90,8 +90,8 @@ async function loadsongs(){
     }).join("");
 
     function setPreview(img, targetIndex){
-      const skinIdx = Number(img.dataset.skin);
-      const previews = uniq(songs[skinIdx]?.previews).slice(0,4);
+      const songIdx = Number(img.dataset.song);
+      const previews = uniq(songs[songIdx]?.previews).slice(0,4);
 
       if(previews.length === 0) return;
 
