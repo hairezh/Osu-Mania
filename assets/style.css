@@ -38,7 +38,7 @@ body{
 #clockBox{
   position:fixed;
   top:14px;
-  right:14px;
+  left:14px;
   z-index:9998;
 
   padding:8px 12px;
