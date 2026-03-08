@@ -92,3 +92,38 @@ toggle.onclick=()=>{
   }
 
 };
+
+body{
+  margin:0;
+  background-color:var(--bg);
+  background-image:
+    linear-gradient(rgba(0,0,0,.60), rgba(0,0,0,.60)),
+    url("SEU_BACKGROUND_AQUI");
+  background-position:center center;
+  background-size:cover;
+  background-repeat:no-repeat;
+  background-attachment:fixed;
+  color:var(--text);
+  font:24px/1.75 "font", monospace;
+  position:relative;
+}
+
+#rainCanvas{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:2;
+  background:transparent;
+}
+
+.container{
+  position:relative;
+  z-index:3;
+}
+
+#clockBox{
+  position:fixed;
+  top:14px;
+  left:14px;
+  z-index:9998;
+}
