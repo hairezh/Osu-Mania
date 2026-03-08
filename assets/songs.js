@@ -148,3 +148,4 @@ async function loadSongs(){
 
 setupIntro();
 loadSongs();
+setupClock();
