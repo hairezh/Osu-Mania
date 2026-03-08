@@ -26,7 +26,7 @@ body{
   background-color:var(--bg);
   background-image:
     linear-gradient(rgba(0,0,0,.60), rgba(0,0,0,.60)),
-    url("https://media.discordapp.net/attachments/1473364920291557406/1479978239710597243/7.jpg?ex=69ae00a5&is=69acaf25&hm=a6042d5d44fd1c7f0f6c81061b05d708f86ec02fe29b4327d794ac480bbad284&=&format=webp&width=1463&height=822");
+    url("image/bg3.png");
   background-position:center center;
   background-size:cover;
   background-repeat:no-repeat;
