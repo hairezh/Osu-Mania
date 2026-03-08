@@ -1,5 +1,5 @@
 function escapeHtml(str){
-  return String(str).replace(/[&<>"']/g, m => ({
+  return String(str).replace(/[&<>"']/g,m=>({
     "&":"&amp;",
     "<":"&lt;",
     ">":"&gt;",
@@ -12,58 +12,67 @@ function escapeAttr(str){
   return escapeHtml(str);
 }
 
+function setupClock(){
+  const clock=document.getElementById("clockBox");
+  if(!clock) return;
+
+  function updateClock(){
+    const now=new Date();
+    const date=now.toLocaleDateString("en-GB");
+    const time=now.toLocaleTimeString("en-GB");
+
+    clock.innerHTML=`${date}<br>${time}`;
+  }
+
+  updateClock();
+  setInterval(updateClock,1000);
+}
+
 async function loadArchives(){
-  const grid = document.getElementById("archivesGrid");
+  const grid=document.getElementById("archivesGrid");
   if(!grid) return;
 
   try{
-    const res = await fetch("data/archives.json", { cache:"no-store" });
-    if(!res.ok) throw new Error(`HTTP ${res.status}`);
 
-    const archives = await res.json();
+    const res=await fetch("data/archives.json",{cache:"no-store"});
+    const archives=await res.json();
 
-    grid.innerHTML = archives.map((a) => {
-      const preview = (a.previews && a.previews[0]) || "";
+    grid.innerHTML=archives.map(a=>{
 
-      return `
-        <div class="card">
-          <div class="previewWrap">
-            <img
-              class="thumb"
-              src="${escapeAttr(preview)}"
-              alt=""
-            >
-          </div>
+      const preview=(a.previews && a.previews[0])||"";
 
-          <div class="cardBody">
-            <div class="cardTitle">${escapeHtml(a.name || "Untitled")}</div>
+      return`
+      <div class="card">
 
-            <div class="cardActions">
-              <a class="small"
-                 href="${escapeAttr(a.download || "#")}"
-                 download>
-                 Download
-              </a>
-
-              ${a.source ? `
-                <a class="small"
-                   href="${escapeAttr(a.source)}"
-                   target="_blank"
-                   rel="noopener noreferrer">
-                   Source
-                </a>
-              ` : ""}
-            </div>
-          </div>
+        <div class="previewWrap">
+          <img class="thumb" src="${escapeAttr(preview)}">
         </div>
+
+        <div class="cardBody">
+
+          <div class="cardTitle">${escapeHtml(a.name)}</div>
+
+          <div class="cardActions">
+
+            <a class="small" href="${escapeAttr(a.download)}" download>
+            Download
+            </a>
+
+            ${a.source?`<a class="small" href="${escapeAttr(a.source)}" target="_blank">Source</a>`:""}
+
+          </div>
+
+        </div>
+
+      </div>
       `;
+
     }).join("");
 
   }catch(e){
     console.error(e);
-    grid.innerHTML = `<div class="mini">Couldn't load archives.json</div>`;
   }
 }
 
-loadArchives();
 setupClock();
+loadArchives();
