@@ -66,3 +66,4 @@ async function loadArchives(){
 }
 
 loadArchives();
+setupClock();
