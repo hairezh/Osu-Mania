@@ -97,7 +97,33 @@ async function loadSkins(){
         </div>
       `;
     }).join("");
+    
+function setupClock(){
+  const clock = document.getElementById("clockBox");
+  if(!clock) return;
 
+  function updateClock(){
+    const now = new Date();
+
+    const date = now.toLocaleDateString("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric"
+    });
+
+    const time = now.toLocaleTimeString("pt-BR", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit"
+    });
+
+    clock.innerHTML = `${date}<br>${time}`;
+  }
+
+  updateClock();
+  setInterval(updateClock, 1000);
+}
+    
     function setPreview(img, targetIndex){
       const skinIdx = Number(img.dataset.skin);
       const previews = uniq(skins[skinIdx]?.previews).slice(0,4);
@@ -162,3 +188,4 @@ async function loadSkins(){
 
 setupIntro();
 loadSkins();
+setupClock();
