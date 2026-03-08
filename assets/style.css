@@ -58,7 +58,54 @@ a{
   color:inherit;
   text-decoration:none;
 }
+.homeCard{
+  position:relative;
+  overflow:hidden;
+  isolation:isolate;
+}
 
+.homeCard::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background-image:var(--card-bg);
+  background-position:center;
+  background-size:cover;
+  background-repeat:no-repeat;
+  opacity:var(--card-opacity, .18);
+  filter:blur(var(--card-blur, 8px));
+  transform:scale(1.08);
+  transition:
+    opacity .3s ease,
+    filter .3s ease,
+    transform .35s ease;
+  z-index:0;
+}
+
+.homeCard::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(rgba(0,0,0,.35), rgba(0,0,0,.45));
+  z-index:0;
+}
+
+.homeCard .cardBody{
+  position:relative;
+  z-index:1;
+  min-height:270px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+}
+
+.homeCard:hover::before{
+  opacity:calc(var(--card-opacity, .18) + .08);
+  filter:blur(calc(var(--card-blur, 8px) - 2px));
+  transform:scale(1.12);
+}
 .container{
   max-width:1100px;
   margin:0 auto;
