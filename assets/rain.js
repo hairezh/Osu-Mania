@@ -1,129 +1,117 @@
 const canvas = document.getElementById("rainCanvas");
-const ctx = canvas.getContext("2d");
+const toggle = document.getElementById("rainToggle");
+const clockTime = document.getElementById("clockTime");
 
-let drops=[];
-let rainEnabled=true;
+let ctx = null;
+let rainEnabled = true;
+let drops = [];
 
-function resize(){
-  canvas.width=window.innerWidth;
-  canvas.height=window.innerHeight;
+if (canvas) {
+  ctx = canvas.getContext("2d", { alpha: true });
 }
 
-window.addEventListener("resize",resize);
-resize();
+function resizeRain() {
+  if (!canvas) return;
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  createRain();
+}
 
-function createRain(){
+function createRain() {
+  if (!canvas) return;
+  drops = [];
 
-  drops=[];
+  const amount = Math.max(120, Math.floor(window.innerWidth * 0.18));
 
-  for(let i=0;i<200;i++){
-
+  for (let i = 0; i < amount; i++) {
     drops.push({
-      x:Math.random()*canvas.width,
-      y:Math.random()*canvas.height,
-      len:10+Math.random()*20,
-      speed:4+Math.random()*4
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      len: 10 + Math.random() * 20,
+      speed: 4 + Math.random() * 6,
+      drift: -0.5 + Math.random() * 1
     });
-
   }
-
 }
 
-createRain();
+function drawRain() {
+  if (!ctx || !canvas) return;
 
-function draw(){
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  if(!rainEnabled) return;
+  if (!rainEnabled) return;
 
-  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.strokeStyle = "rgba(180, 200, 255, 0.30)";
+  ctx.lineWidth = 1;
 
-  ctx.strokeStyle="rgba(180,200,255,.35)";
-  ctx.lineWidth=1;
-
-  for(let d of drops){
-
+  for (const d of drops) {
     ctx.beginPath();
-    ctx.moveTo(d.x,d.y);
-    ctx.lineTo(d.x,d.y+d.len);
+    ctx.moveTo(d.x, d.y);
+    ctx.lineTo(d.x + d.drift * 2, d.y + d.len);
     ctx.stroke();
 
-    d.y+=d.speed;
+    d.y += d.speed;
+    d.x += d.drift;
 
-    if(d.y>canvas.height){
-      d.y=-20;
-      d.x=Math.random()*canvas.width;
+    if (d.y > canvas.height + 30 || d.x < -30 || d.x > canvas.width + 30) {
+      d.y = -20;
+      d.x = Math.random() * canvas.width;
     }
+  }
+}
 
+function rainLoop() {
+  drawRain();
+  requestAnimationFrame(rainLoop);
+}
+
+function setupRainToggle() {
+  if (!toggle) return;
+
+  const saved = localStorage.getItem("rainEnabled");
+  rainEnabled = saved !== "off";
+
+  toggle.textContent = rainEnabled ? "Rain: ON" : "Rain: OFF";
+
+  toggle.addEventListener("click", () => {
+    rainEnabled = !rainEnabled;
+    localStorage.setItem("rainEnabled", rainEnabled ? "on" : "off");
+    toggle.textContent = rainEnabled ? "Rain: ON" : "Rain: OFF";
+
+    if (!rainEnabled && ctx && canvas) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+  });
+}
+
+function setupClockInline() {
+  if (!clockTime) return;
+
+  function updateClock() {
+    const now = new Date();
+
+    const date = now.toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric"
+    });
+
+    const time = now.toLocaleTimeString("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit"
+    });
+
+    clockTime.innerHTML = `${date}<br>${time}`;
   }
 
+  updateClock();
+  setInterval(updateClock, 1000);
 }
 
-function loop(){
+window.addEventListener("resize", resizeRain);
 
-  draw();
-  requestAnimationFrame(loop);
-
-}
-
-loop();
-
-/* toggle */
-
-const toggle=document.getElementById("rainToggle");
-
-const saved=localStorage.getItem("rain");
-
-if(saved==="off"){
-  rainEnabled=false;
-  toggle.innerText="Rain: OFF";
-}
-
-toggle.onclick=()=>{
-
-  rainEnabled=!rainEnabled;
-
-  if(rainEnabled){
-    toggle.innerText="Rain: ON";
-    localStorage.setItem("rain","on");
-  }else{
-    toggle.innerText="Rain: OFF";
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    localStorage.setItem("rain","off");
-  }
-
-};
-
-body{
-  margin:0;
-  background-color:var(--bg);
-  background-image:
-    linear-gradient(rgba(0,0,0,.60), rgba(0,0,0,.60)),
-    url("SEU_BACKGROUND_AQUI");
-  background-position:center center;
-  background-size:cover;
-  background-repeat:no-repeat;
-  background-attachment:fixed;
-  color:var(--text);
-  font:24px/1.75 "font", monospace;
-  position:relative;
-}
-
-#rainCanvas{
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  z-index:2;
-  background:transparent;
-}
-
-.container{
-  position:relative;
-  z-index:3;
-}
-
-#clockBox{
-  position:fixed;
-  top:14px;
-  left:14px;
-  z-index:9998;
-}
+resizeRain();
+setupRainToggle();
+setupClockInline();
+rainLoop();
