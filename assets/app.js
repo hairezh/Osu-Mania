@@ -16,7 +16,16 @@ function setupIntro(){
   const intro = document.getElementById("intro");
   if(!intro) return;
 
+  const alreadyShown = sessionStorage.getItem("introShown");
+
+  if(alreadyShown){
+    intro.remove();
+    return;
+  }
+
   window.addEventListener("load", () => {
+    sessionStorage.setItem("introShown", "true");
+
     setTimeout(() => {
       intro.classList.add("hide");
 
