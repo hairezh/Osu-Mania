@@ -1,6 +1,6 @@
 @font-face{
   font-family:"font";
-  src:url("../fonts/font.otf") format("truetype");
+  src:url("../fonts/font.otf") format("opentype");
   font-weight:normal;
   font-style:normal;
 }
@@ -14,19 +14,23 @@
   --radius:10px;
 }
 
-*{ box-sizing:border-box; }
+*{
+  box-sizing:border-box;
+}
 
-html,body{
+html,
+body{
   height:100%;
   min-height:100%;
 }
 
 body{
   margin:0;
+  position:relative;
   background-color:var(--bg);
   background-image:
     linear-gradient(rgba(0,0,0,.60), rgba(0,0,0,.60)),
-    url("images/bg3.png");
+    url("https://media.discordapp.net/attachments/1473364920291557406/1479978239710597243/7.jpg?ex=69ae00a5&is=69acaf25&hm=a6042d5d44fd1c7f0f6c81061b05d708f86ec02fe29b4327d794ac480bbad284&=&format=webp&width=1463&height=822");
   background-position:center center;
   background-size:cover;
   background-repeat:no-repeat;
@@ -35,77 +39,69 @@ body{
   font:24px/1.75 "font", monospace;
 }
 
+a{
+  color:inherit;
+  text-decoration:none;
+}
+
+/* rain */
+
+#rainCanvas{
+  position:fixed;
+  inset:0;
+  z-index:2;
+  pointer-events:none;
+  background:transparent;
+}
+
+/* clock + toggle */
+
 #clockBox{
   position:fixed;
   top:14px;
   left:14px;
-
+  z-index:9998;
   padding:8px 12px;
   border:1px solid var(--border);
   border-radius:12px;
   background:rgba(0,0,0,.28);
   backdrop-filter:blur(8px);
-
   color:var(--text);
   font-size:13px;
   line-height:1.4;
-  text-align:right;
-
+  text-align:left;
   box-shadow:0 8px 20px rgba(0,0,0,.25);
 }
-a{
-  color:inherit;
-  text-decoration:none;
-}
-.homeCard{
-  position:relative;
-  overflow:hidden;
-  isolation:isolate;
-}
 
-.homeCard::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  background-image:var(--card-bg);
-  background-position:center;
-  background-size:cover;
-  background-repeat:no-repeat;
-  opacity:var(--card-opacity, .18);
-  filter:blur(var(--card-blur, 8px));
-  transform:scale(1.08);
+#rainToggle{
+  margin-top:6px;
+  display:inline-block;
+  font-size:12px;
+  cursor:pointer;
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:4px 8px;
+  background:rgba(0,0,0,.25);
+  color:var(--muted);
   transition:
-    opacity .3s ease,
-    filter .3s ease,
-    transform .35s ease;
-  z-index:0;
+    color .2s ease,
+    background .2s ease,
+    border-color .2s ease,
+    transform .2s ease;
 }
 
-.homeCard::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:linear-gradient(rgba(0,0,0,.35), rgba(0,0,0,.45));
-  z-index:0;
+#rainToggle:hover{
+  color:var(--text);
+  background:rgba(255,255,255,.08);
+  border-color:rgba(255,255,255,.20);
+  transform:translateY(-1px);
 }
 
-.homeCard .cardBody{
-  position:relative;
-  z-index:1;
-  min-height:270px;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  text-align:center;
-}
+/* layout */
 
-.homeCard:hover::before{
-  opacity:calc(var(--card-opacity, .18) + .08);
-  filter:blur(calc(var(--card-blur, 8px) - 2px));
-  transform:scale(1.12);
-}
 .container{
+  position:relative;
+  z-index:3;
   max-width:1100px;
   margin:0 auto;
   padding:20px;
@@ -197,6 +193,12 @@ a{
   box-shadow:0 10px 24px rgba(0,0,0,.30);
 }
 
+.btn.active{
+  color:var(--text);
+  border-color:rgba(255,255,255,.22);
+  background:rgba(255,255,255,.06);
+}
+
 .hero{
   margin-top:16px;
   border:1px solid var(--border);
@@ -236,6 +238,8 @@ a{
   }
 }
 
+/* cards */
+
 .card{
   border:1px solid var(--border);
   border-radius:var(--radius);
@@ -260,6 +264,59 @@ a{
   background:rgba(255,255,255,.05);
 }
 
+/* home cards with preview background */
+
+.homeCard{
+  position:relative;
+  overflow:hidden;
+  isolation:isolate;
+}
+
+.homeCard::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background-image:var(--card-bg);
+  background-position:center;
+  background-size:cover;
+  background-repeat:no-repeat;
+  opacity:var(--card-opacity,.18);
+  filter:blur(var(--card-blur,8px));
+  transform:scale(1.08);
+  transition:
+    opacity .3s ease,
+    filter .3s ease,
+    transform .35s ease;
+  z-index:0;
+}
+
+.homeCard::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(rgba(0,0,0,.35), rgba(0,0,0,.45));
+  z-index:0;
+}
+
+.homeCard .cardBody{
+  position:relative;
+  z-index:1;
+  min-height:270px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+}
+
+.homeCard:hover::before{
+  opacity:calc(var(--card-opacity,.18) + .08);
+  filter:blur(calc(var(--card-blur,8px) - 2px));
+  transform:scale(1.12);
+}
+
+/* previews */
+
 .previewWrap{
   position:relative;
   display:flex;
@@ -269,23 +326,36 @@ a{
 }
 
 .thumb{
-  width:200px;            /* tamanho do ícone */
+  width:200px;
   height:200px;
   object-fit:cover;
-
-  border-radius:12px;     /* cantos arredondados */
-
+  border-radius:12px;
   border:1px solid var(--border);
   background:rgba(0,0,0,.18);
-
-  padding:6px;            /* espaço interno */
-  
+  padding:6px;
   transition:transform .25s ease, box-shadow .25s ease;
 }
 
 .thumb:hover{
   transform:scale(1.05);
   box-shadow:0 8px 20px rgba(0,0,0,.35);
+}
+
+/* optional variants if you add classes in html/js later */
+
+.thumbSkin{
+  width:200px;
+  height:200px;
+}
+
+.thumbMap{
+  width:280px;
+  height:160px;
+}
+
+.thumbSong{
+  width:220px;
+  height:220px;
 }
 
 .previewArrow{
@@ -320,8 +390,13 @@ a{
   opacity:1;
 }
 
-.previewArrow.left{ left:10px; }
-.previewArrow.right{ right:10px; }
+.previewArrow.left{
+  left:10px;
+}
+
+.previewArrow.right{
+  right:10px;
+}
 
 .previewDots{
   position:absolute;
@@ -351,6 +426,8 @@ a{
   transform:scale(1.35);
   box-shadow:0 0 10px rgba(255,255,255,.35);
 }
+
+/* card content */
 
 .cardBody{
   flex:1;
@@ -426,11 +503,7 @@ a{
   color:var(--text);
 }
 
-.btn.active{
-  color:var(--text);
-  border-color:rgba(255,255,255,.22);
-  background:rgba(255,255,255,.06);
-}
+/* intro */
 
 #intro{
   position:fixed;
@@ -460,6 +533,8 @@ a{
   transform:translateY(10px);
   animation:introTextShow 2s ease forwards;
 }
+
+/* animations */
 
 @keyframes introTextShow{
   to{
@@ -494,52 +569,4 @@ a{
     opacity:1;
     transform:translateY(0);
   }
-}
-/* rain canvas */
-
-#rainCanvas{
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  z-index:1;
-}
-
-/* clock + toggle container */
-
-#clockBox{
-  position:fixed;
-  top:14px;
-  left:14px;
-  z-index:9998;
-
-  padding:8px 12px;
-  border:1px solid var(--border);
-  border-radius:12px;
-  background:rgba(0,0,0,.28);
-  backdrop-filter:blur(8px);
-
-  color:var(--text);
-  font-size:13px;
-  line-height:1.4;
-  text-align:left;
-
-  box-shadow:0 8px 20px rgba(0,0,0,.25);
-}
-
-#rainToggle{
-  margin-top:6px;
-  font-size:12px;
-  cursor:pointer;
-
-  border:1px solid var(--border);
-  border-radius:8px;
-  padding:4px 8px;
-
-  background:rgba(0,0,0,.25);
-  color:var(--muted);
-}
-
-#rainToggle:hover{
-  color:var(--text);
-  background:rgba(255,255,255,.08);
 }
