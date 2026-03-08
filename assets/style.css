@@ -495,3 +495,51 @@ a{
     transform:translateY(0);
   }
 }
+/* rain canvas */
+
+#rainCanvas{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:1;
+}
+
+/* clock + toggle container */
+
+#clockBox{
+  position:fixed;
+  top:14px;
+  left:14px;
+  z-index:9998;
+
+  padding:8px 12px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:rgba(0,0,0,.28);
+  backdrop-filter:blur(8px);
+
+  color:var(--text);
+  font-size:13px;
+  line-height:1.4;
+  text-align:left;
+
+  box-shadow:0 8px 20px rgba(0,0,0,.25);
+}
+
+#rainToggle{
+  margin-top:6px;
+  font-size:12px;
+  cursor:pointer;
+
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:4px 8px;
+
+  background:rgba(0,0,0,.25);
+  color:var(--muted);
+}
+
+#rainToggle:hover{
+  color:var(--text);
+  background:rgba(255,255,255,.08);
+}
