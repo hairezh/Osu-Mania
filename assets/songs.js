@@ -27,7 +27,7 @@ function setupIntro(){
   });
 }
 
-async function loadsongs(){
+async function loadSongs(){
   const grid = document.getElementById("songsGrid");
   if(!grid) return;
 
@@ -92,7 +92,6 @@ async function loadsongs(){
     function setPreview(img, targetIndex){
       const songIdx = Number(img.dataset.song);
       const previews = uniq(songs[songIdx]?.previews).slice(0,4);
-
       if(previews.length === 0) return;
 
       const i = ((targetIndex % previews.length) + previews.length) % previews.length;
@@ -117,12 +116,10 @@ async function loadsongs(){
       if(arrow){
         const wrap = arrow.closest(".previewWrap");
         const imgEl = wrap?.querySelector(".js-preview");
-
         if(!imgEl) return;
 
         const dir = Number(arrow.dataset.dir || 1);
         const current = Number(imgEl.dataset.i || 0);
-
         setPreview(imgEl, current + dir);
         return;
       }
@@ -130,11 +127,9 @@ async function loadsongs(){
       if(dot){
         const wrap = dot.closest(".previewWrap");
         const imgEl = wrap?.querySelector(".js-preview");
-
         if(!imgEl) return;
 
         const target = Number(dot.dataset.i || 0);
-
         setPreview(imgEl, target);
         return;
       }
@@ -152,4 +147,4 @@ async function loadsongs(){
 }
 
 setupIntro();
-loadsongs();
+loadSongs();
